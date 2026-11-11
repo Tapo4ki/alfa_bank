@@ -1,0 +1,15 @@
+# данные кейса нельзя публиковать
+data/
+*.backup
+*.dump
+*.sql
+*.csv
+*.docx
+# секреты
+.env
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+!bot/schema.sql
