@@ -19,7 +19,8 @@ class FakeKB:
         self.hits, self.stems, self.total = hits, list(stems), total
 
     async def search(self, q, limit=6, only_paid=None):
-        return SearchResult(self.stems, self.hits, self.total if self.total is not None else len(self.hits))
+        hits = [h for h in self.hits if only_paid is None or h.paid == only_paid]
+        return SearchResult(self.stems, hits, self.total if self.total is not None else len(hits))
 
 
 class MemStore:
@@ -94,3 +95,33 @@ def test_next_occurrence():
     assert next_occurrence("yearly:04-28,07-28,10-28", after, 10, 3) == datetime(2027, 4, 25, 10, tzinfo=TZ)
     assert next_occurrence("once:2026-11-01", after, 10) is None
     assert next_occurrence("once:2026-11-10", after, 9) == datetime(2026, 11, 10, 9, tzinfo=TZ)
+
+
+def test_weak_coverage_refused():
+    # «квантовая физика банан»: 3 основы, в материалах находится только одна (0.33) → честный отказ
+    d = Dialog(FakeKB([hit("Паспорт отходов", cov=0.33)], stems=["бана", "квантов", "физик"]), MemStore(), "https://x")
+    r = run(d.ask(1, "квантовая физика банан"))
+    assert "ничего не нашёл" in r.text and "Паспорт" not in r.text
+
+
+def test_paid_only_match_shows_no_free_claim():
+    d = Dialog(FakeKB([hit("Курс УСН", paid=True, price=3990, cov=1.0)]), MemStore(), "https://x")
+    r = run(d.ask(1, "усн маркетплейс"))
+    assert "Бесплатных материалов" in r.text and "3990" in r.text and "текст" not in r.text
+
+
+def test_callback_data_fits_telegram_limit():
+    from bot.main import cb
+    d = cb("q:" + "Налоги и взносы ИП: полный иллюстрированный гайд для начинающих")
+    assert len(d.encode()) <= 64
+
+
+def test_tax_modes_reference_known_events():
+    from bot.reminders import TAX_EVENTS, TAX_MODES
+    for _, keys in TAX_MODES.values():
+        assert all(k in TAX_EVENTS for k in keys)
+
+
+def test_fillers_dropped_from_stems():
+    from bot.kb import FILLERS
+    assert {"такое", "это"} <= FILLERS

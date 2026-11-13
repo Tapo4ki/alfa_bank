@@ -64,18 +64,20 @@ class Dialog:
             q, u.pending = f"{u.pending} {q}", None
         res = await self.kb.search(q, limit=8)
         free = [h for h in res.hits if not h.paid]
-        paid = [h for h in res.hits if h.paid]
+        # платные ищем отдельно: иначе их вытесняют бесплатные статьи из топа
+        paid = (await self.kb.search(q, limit=2, only_paid=True)).hits
 
         # слишком общий запрос из одного слова → один уточняющий вопрос
         if len(res.stems) == 1 and res.total >= CLARIFY_TOTAL and not text.startswith("/"):
             u.pending = q
             await self.store.save(u)
-            opts = [(h.title[:40], f"q:{h.title[:55]}") for h in free[:3]]
+            opts = [(h.title.replace(" ", " ")[:40], "q:" + h.title.replace(" ", " ")) for h in free[:3]]
             return Reply("Слишком широкий вопрос. Что именно вас интересует? Опишите подробнее "
                          "или выберите ближайшее:", opts)
 
         strong = [h for h in free if h.coverage >= 0.5]
-        if not res.hits or not (strong or paid):
+        rec = [h for h in paid if h.coverage >= 0.5]
+        if not (strong or rec):
             await self.store.save(u)
             return Reply("В базе «Альфа-Курс» по этому вопросу ничего не нашёл. Попробуйте переформулировать "
                          "или уточнить тему, например: налоги, патент, самозанятость, касса.")
@@ -89,7 +91,6 @@ class Dialog:
             parts.append("Бесплатных материалов по этому вопросу в базе нет.")
 
         u.answers += 1
-        rec = [h for h in paid if h.coverage >= 0.5]
         if rec and u.answers - u.last_paid_at >= PAID_GAP:
             h = rec[0]
             price = f" ({h.price} ₽)" if h.price else ""
