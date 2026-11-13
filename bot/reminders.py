@@ -21,6 +21,13 @@ TAX_EVENTS = {
     "ip_contrib": ("Страховые взносы ИП за себя", "yearly:12-31"),
     "ip_1pct": ("Взнос 1% с дохода ИП свыше 300 тыс. ₽", "yearly:07-01"),
     "enp": ("Единый налоговый платёж (ЕНП)", "monthly:28"),
+    "npd": ("Налог на профессиональный доход (НПД)", "monthly:28"),
+}
+# режим -> какие даты подписываем
+TAX_MODES = {
+    "usn_ip": ("УСН, ИП", ["usn_advance", "usn_ip_year", "ip_contrib", "ip_1pct"]),
+    "usn_ooo": ("УСН, ООО", ["usn_advance", "usn_ooo_year"]),
+    "npd": ("Самозанятый (НПД)", ["npd"]),
 }
 
 MONTHS = {"января": 1, "февраля": 2, "марта": 3, "апреля": 4, "мая": 5, "июня": 6,
@@ -160,3 +167,30 @@ async def listing(pool, tg_id: int):
 async def remove(pool, tg_id: int, rid: int) -> bool:
     async with pool.acquire() as c:
         return (await c.execute("UPDATE bot.reminders SET active=false WHERE id=$1 AND tg_id=$2 AND active", rid, tg_id)).endswith("1")
+
+
+async def tax_subscribe(pool, tg_id: int, tz: str, mode: str, lead: int = 3) -> list[tuple[str, datetime]]:
+    """Заменяет налоговые напоминания пользователя набором под выбранный режим."""
+    await tax_disable(pool, tg_id)
+    out = []
+    for key in TAX_MODES[mode][1]:
+        name, rule = TAX_EVENTS[key]
+        nxt = await add(pool, tg_id, Parsed(name, rule), tz, "tax", lead_days=lead)
+        if nxt:
+            out.append((name, nxt))
+    return out
+
+
+async def tax_disable(pool, tg_id: int) -> int:
+    async with pool.acquire() as c:
+        return int((await c.execute("UPDATE bot.reminders SET active=false WHERE tg_id=$1 AND kind='tax' AND active", tg_id)).split()[-1])
+
+
+async def tax_set_lead(pool, tg_id: int, tz: str, lead: int) -> int:
+    """Меняет «за сколько дней предупреждать» у всех налоговых напоминаний."""
+    async with pool.acquire() as c:
+        rows = await c.fetch("SELECT id,rule,hour FROM bot.reminders WHERE tg_id=$1 AND kind='tax' AND active", tg_id)
+        for r in rows:
+            nxt = next_occurrence(r["rule"], now_in(tz), r["hour"], lead)
+            await c.execute("UPDATE bot.reminders SET lead_days=$2,next_at=$3 WHERE id=$1", r["id"], lead, nxt)
+    return len(rows)

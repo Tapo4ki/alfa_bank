@@ -46,10 +46,15 @@ class PgStore:
                 json.dumps({"pending": u.pending}))
 
 
+def cb(d: str) -> str:
+    """callback_data в Telegram ограничена 64 БАЙТАМИ (кириллица = 2 байта на символ)."""
+    return d.encode()[:64].decode(errors="ignore")
+
+
 def kb_markup(r: Reply) -> InlineKeyboardMarkup | None:
     if not r.buttons:
         return None
-    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=t, callback_data=d[:64])] for t, d in r.buttons])
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=t, callback_data=cb(d))] for t, d in r.buttons])
 
 
 async def amain() -> None:
@@ -81,16 +86,42 @@ async def amain() -> None:
         nxt = await rem.add(pool, m.from_user.id, p, cfg.tz)
         await m.answer(f"Готово: «{p.text}». Ближайшее — {nxt:%d.%m.%Y в %H:%M}." if nxt else "Эта дата уже прошла.")
 
+    def lead_kb():
+        return InlineKeyboardMarkup(inline_keyboard=[[
+            InlineKeyboardButton(text=f"За {n} дн.", callback_data=f"tl:{n}") for n in (1, 3, 7)
+        ] + [InlineKeyboardButton(text="Отключить", callback_data="td")]])
+
     @dp.message(Command("tax"))
     async def tax(m: Message):
-        rows = [[InlineKeyboardButton(text=n, callback_data=f"t:{k}")] for k, (n, _) in rem.TAX_EVENTS.items()]
-        await m.answer("О каких налоговых датах напоминать? За 3 дня до срока.", reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
+        rows = [[InlineKeyboardButton(text=v[0], callback_data=f"tm:{k}")] for k, v in rem.TAX_MODES.items()]
+        rows.append([InlineKeyboardButton(text="Другой / не знаю", callback_data="tm:other")])
+        await m.answer("Чтобы напоминать про нужные налоги, уточните: какой у вас режим?",
+                       reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
 
-    @dp.callback_query(F.data.startswith("t:"))
-    async def tax_cb(cq: CallbackQuery):
-        name, rule = rem.TAX_EVENTS[cq.data[2:]]
-        nxt = await rem.add(pool, cq.from_user.id, rem.Parsed(name, rule), cfg.tz, "tax", lead_days=3)
-        await cq.message.answer(f"Подписал: {name}. Ближайшее напоминание — {nxt:%d.%m.%Y}.")
+    @dp.callback_query(F.data.startswith("tm:"))
+    async def tax_mode(cq: CallbackQuery):
+        mode = cq.data[3:]
+        if mode not in rem.TAX_MODES:
+            await cq.message.answer("Тогда лучше сначала определиться с режимом — спросите меня, например, «какую систему налогообложения выбрать». "
+                                    "Автоматические налоговые даты я веду для УСН и НПД.")
+            return await cq.answer()
+        res = await rem.tax_subscribe(pool, cq.from_user.id, cfg.tz, mode, 3)
+        lines = "\n".join(f"• {n} — {d:%d.%m.%Y}" for n, d in res)
+        await cq.message.answer(f"Подписал ({rem.TAX_MODES[mode][0]}), предупрежу за 3 дня:\n{lines}\n"
+                                "Даты ориентировочные, без переноса на выходные. Можно изменить частоту или отключить:",
+                                reply_markup=lead_kb())
+        await cq.answer()
+
+    @dp.callback_query(F.data.startswith("tl:"))
+    async def tax_lead(cq: CallbackQuery):
+        n = await rem.tax_set_lead(pool, cq.from_user.id, cfg.tz, int(cq.data[3:]))
+        await cq.message.answer(f"Теперь предупреждаю за {cq.data[3:]} дн. (напоминаний: {n})." if n else "Налоговых напоминаний нет, начните с /tax.")
+        await cq.answer()
+
+    @dp.callback_query(F.data == "td")
+    async def tax_off(cq: CallbackQuery):
+        n = await rem.tax_disable(pool, cq.from_user.id)
+        await cq.message.answer(f"Налоговые напоминания отключены ({n})." if n else "Налоговых напоминаний не было.")
         await cq.answer()
 
     @dp.message(Command("list"))
