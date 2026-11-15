@@ -42,6 +42,21 @@ class Store(Protocol):
     async def save(self, u: User) -> None: ...
 
 
+def shorten(t: str, n: int = 40) -> str:
+    """Обрезает по границе слова и добавляет «…»."""
+    t = t.replace(" ", " ").strip()
+    if len(t) <= n:
+        return t
+    cut = t[:n - 1]
+    if " " in cut and t[n - 1] != " ":
+        cut = cut.rsplit(" ", 1)[0]
+    return cut.rstrip(" ,.:;-—") + "…"
+
+
+LABELS = {"stage": "Этап", "sphere": "Сфера", "tax": "Режим"}
+VALUES = {v: l for q in PROFILE_Q.values() for l, v in q[1]}
+
+
 def link(base_url: str, h: Hit) -> str:
     return f"{base_url}/{PATHS.get(h.kind, h.kind)}/{h.slug}"
 
@@ -71,16 +86,19 @@ class Dialog:
         if len(res.stems) == 1 and res.total >= CLARIFY_TOTAL and not text.startswith("/"):
             u.pending = q
             await self.store.save(u)
-            opts = [(h.title.replace(" ", " ")[:40], "q:" + h.title.replace(" ", " ")) for h in free[:3]]
+            opts = [(shorten(h.title), "i:" + h.id) for h in free[:3]]
             return Reply("Слишком широкий вопрос. Что именно вас интересует? Опишите подробнее "
                          "или выберите ближайшее:", opts)
 
         strong = [h for h in free if h.coverage >= 0.5]
         rec = [h for h in paid if h.coverage >= 0.5]
+        u.answers += 1                      # считаем каждый содержательный вопрос, в т.ч. без результата
         if not (strong or rec):
+            btn = self._profile_buttons(u)
             await self.store.save(u)
             return Reply("В базе «Альфа-Курс» по этому вопросу ничего не нашёл. Попробуйте переформулировать "
-                         "или уточнить тему, например: налоги, патент, самозанятость, касса.")
+                         "или уточнить тему, например: налоги, патент, самозанятость, касса."
+                         + (f"\n\n{btn[0]}" if btn else ""), btn[1] if btn else [])
 
         parts = []
         if strong:
@@ -90,22 +108,42 @@ class Dialog:
         else:
             parts.append("Бесплатных материалов по этому вопросу в базе нет.")
 
-        u.answers += 1
         if rec and u.answers - u.last_paid_at >= PAID_GAP:
             h = rec[0]
             price = f" ({h.price} ₽)" if h.price else ""
             parts.append(f"Если нужно глубже — есть платный курс{price}:\n" + fmt_hit(self.base, h, False))
             u.last_paid_at = u.answers
 
-        buttons: list[tuple[str, str]] = []
-        nxt = self._next_profile(u)
-        if nxt:
-            u.profile_asked = True
-            question, opts = PROFILE_Q[nxt]
-            parts.append(f"\n{question} (поможет подбирать материалы точнее)")
-            buttons = [(label, f"p:{nxt}:{val}") for label, val in opts] + [("Пропустить", "p:skip:1")]
+        btn = self._profile_buttons(u)
+        if btn:
+            parts.append("\n" + btn[0])
         await self.store.save(u)
-        return Reply("\n\n".join(parts), buttons)
+        return Reply("\n\n".join(parts), btn[1] if btn else [])
+
+    def _profile_buttons(self, u: User):
+        nxt = self._next_profile(u)
+        if not nxt:
+            return None
+        u.profile_asked = True
+        question, opts = PROFILE_Q[nxt]
+        return (f"{question} (поможет подбирать материалы точнее)",
+                [(l, f"p:{nxt}:{v}") for l, v in opts] + [("Пропустить", "p:skip:1")])
+
+    async def me(self, tg_id: int) -> Reply:
+        u = await self.store.get(tg_id)
+        rows = "\n".join(f"{LABELS[k]}: {VALUES.get(getattr(u, k), 'не указан')}" for k in PROFILE_ORDER)
+        return Reply("Ваш профиль:\n" + rows, [("Изменить", "me:edit"), ("Сбросить", "me:reset")])
+
+    async def me_action(self, tg_id: int, act: str) -> Reply:
+        u = await self.store.get(tg_id)
+        for k in PROFILE_ORDER:
+            setattr(u, k, None)
+        u.profile_asked = act == "edit"
+        await self.store.save(u)
+        if act == "reset":
+            return Reply("Профиль сброшен.")
+        question, opts = PROFILE_Q[PROFILE_ORDER[0]]
+        return Reply(question, [(l, f"p:{PROFILE_ORDER[0]}:{v}") for l, v in opts] + [("Пропустить", "p:skip:1")])
 
     @staticmethod
     def _next_profile(u: User) -> Optional[str]:

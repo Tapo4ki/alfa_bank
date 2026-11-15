@@ -125,3 +125,27 @@ def test_tax_modes_reference_known_events():
 def test_fillers_dropped_from_stems():
     from bot.kb import FILLERS
     assert {"такое", "это"} <= FILLERS
+
+
+def test_shorten_on_word_boundary():
+    from bot.dialog import shorten
+    t = shorten("Налоги и взносы ИП: полный иллюстрированный гайд")
+    assert t.endswith("…") and len(t) <= 40 and "иллюстрирован…" not in t
+    assert shorten("Короткий") == "Короткий"
+
+
+def test_profile_shown_on_second_question_even_if_not_found():
+    d = Dialog(FakeKB([hit("A", cov=0.2)], stems=["а", "б"]), MemStore(), "https://x")
+    assert not run(d.ask(1, "что-то")).buttons
+    r = run(d.ask(1, "что-то ещё"))
+    assert "ничего не нашёл" in r.text and r.buttons[0][1].startswith("p:stage")
+
+
+def test_me_edit_reset():
+    d = Dialog(FakeKB([]), MemStore(), "https://x")
+    run(d.profile(1, "stage", "idea"))
+    r = run(d.me(1))
+    assert "Только думаю" in r.text and [b[1] for b in r.buttons] == ["me:edit", "me:reset"]
+    assert run(d.me_action(1, "edit")).buttons[0][1].startswith("p:stage")
+    run(d.me_action(1, "reset"))
+    assert "не указан" in run(d.me(1)).text

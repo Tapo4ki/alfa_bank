@@ -18,6 +18,8 @@ from .kb import PgSearchBackend, build_index, init_schema
 
 log = logging.getLogger("bot")
 
+COMMANDS = ("Команды: /help, /me — профиль, /remind — напоминание, /tax — налоговые даты, "
+            "/list, /del N, /pause, /resume. Или просто задайте вопрос текстом.")
 HELP = ("Я помощник «Альфа-Курс». Задайте вопрос о бизнесе, налогах, документах — найду материалы в базе.\n\n"
         "/remind — создать напоминание, например: <i>напомни завтра в 9 оплатить аренду</i> "
         "или <i>каждый месяц 15 числа сдать отчёт</i>\n"
@@ -153,6 +155,26 @@ async def amain() -> None:
     async def quick(cq: CallbackQuery):
         await send(cq.message, await dlg.ask(cq.from_user.id, cq.data[2:]))
         await cq.answer()
+
+    @dp.message(Command("me"))
+    async def me(m: Message):
+        await send(m, await dlg.me(m.from_user.id))
+
+    @dp.callback_query(F.data.startswith("me:"))
+    async def me_cb(cq: CallbackQuery):
+        await send(cq.message, await dlg.me_action(cq.from_user.id, cq.data[3:]))
+        await cq.answer()
+
+    @dp.callback_query(F.data.startswith("i:"))
+    async def by_id(cq: CallbackQuery):
+        async with pool.acquire() as c:
+            title = await c.fetchval("SELECT title FROM bot.kb_items WHERE id=$1::uuid", cq.data[2:])
+        await send(cq.message, await dlg.ask(cq.from_user.id, title or ""))
+        await cq.answer()
+
+    @dp.message(F.text.startswith("/"))
+    async def unknown(m: Message):
+        await m.answer("Не знаю такой команды. " + COMMANDS)
 
     @dp.message(F.text)
     async def text(m: Message):
