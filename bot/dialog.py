@@ -87,7 +87,7 @@ VALUES = {v: l for q in PROFILE_Q.values() for l, v in q[1]}
 
 
 def link(base_url: str, h: Hit) -> str:
-    return f"{base_url}/{PATHS.get(h.kind, h.kind)}/{h.slug}"
+    return f"{base_url}/{PATHS.get(h.kind, h.kind)}/{h.slug}?utm_source=tgbot&utm_medium=telegram"
 
 
 def fmt_hit(base_url: str, h: Hit, with_snippet: bool = True) -> str:
