@@ -143,11 +143,16 @@ class Dialog:
             parts.append(f"Если нужно глубже — есть платный курс{price}:\n" + fmt_hit(self.base, h, False))
             u.last_paid_at = u.answers
 
+        shown = strong[:3] + (rec[:1] if rec and u.last_paid_at == u.answers else [])
+        course = next((h for h in shown if h.kind == "course"), None)
         btn = self._profile_buttons(u)
         if btn:
             parts.append("\n" + btn[0])
+        buttons = list(btn[1]) if btn else []
+        if course:
+            buttons.append(("Напомнить продолжить обучение", "cr:" + course.id))
         await self.store.save(u)
-        return Reply("\n\n".join(parts), btn[1] if btn else [])
+        return Reply("\n\n".join(parts), buttons)
 
     def _profile_buttons(self, u: User):
         nxt = self._next_profile(u)
