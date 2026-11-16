@@ -13,7 +13,7 @@ class Config:
     def from_env() -> "Config":
         return Config(
             token=os.getenv("TELEGRAM_BOT_TOKEN", ""),
-            base_url=os.getenv("BASE_URL", "https://example.com").rstrip("/"),
+            base_url=os.getenv("BASE_URL", "https://alfabank.ru/alfafuture").rstrip("/"),
             database_url=os.getenv("DATABASE_URL", "postgresql://postgres:pg@localhost:5432/courses"),
             tz=os.getenv("BOT_TZ", "Europe/Moscow"),
         )

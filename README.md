@@ -9,7 +9,7 @@ cp env.example .env   # впишите TELEGRAM_BOT_TOKEN (и BASE_URL сайт�
 docker compose up -d --build
 ```
 - **Бэкап** положите в `data/alfa_course_hackathon.backup` (путь меняется через `BACKUP_FILE`). Он восстанавливается один раз при первой инициализации тома `pgdata`; чтобы восстановить заново: `docker compose down -v`.
-- **Env** (`env.example`): `TELEGRAM_BOT_TOKEN`, `BASE_URL` (из него строятся ссылки `BASE_URL/<раздел>/<slug>`; пока `example.com`), `POSTGRES_PASSWORD`, `BOT_TZ` (по умолчанию Europe/Moscow), `BACKUP_FILE`.
+- **Env** (`env.example`): `TELEGRAM_BOT_TOKEN`, `BASE_URL` (из него строятся ссылки `BASE_URL/<раздел>/<slug>`; `https://alfabank.ru/alfafuture`), `POSTGRES_PASSWORD`, `BOT_TZ` (по умолчанию Europe/Moscow), `BACKUP_FILE`.
 - **Порты**: наружу ничего не публикуется. Бот сам ходит в Telegram (long polling), Postgres доступен только внутри сети compose (`db:5432`).
 - Логи: `docker compose logs -f bot`. Индекс поиска (`bot.kb_items`) строится при первом старте, ~1500 материалов.
 
