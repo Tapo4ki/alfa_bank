@@ -53,6 +53,35 @@ def shorten(t: str, n: int = 40) -> str:
     return cut.rstrip(" ,.:;-—") + "…"
 
 
+# слова, по которым материал считаем подходящим профилю (поиск по заголовку и описанию)
+PROFILE_WORDS = {
+    "stage": {"idea": ("открыт", "регистрац", "начина", "старт", "выбор", "как стать", "с чего"),
+              "running": ("отчёт", "отчет", "бухгалтер", "налог", "взнос", "сотрудник", "касс", "декларац")},
+    "sphere": {"trade": ("торгов", "розниц", "маркетплейс", "товар", "магазин", "склад"),
+               "services": ("услуг", "консульт", "самозанят", "фриланс"),
+               "prod": ("производ", "себестоимост", "сырь", "цех")},
+    "tax": {"usn": ("усн", "упрощ"), "npd": ("патент", "нпд", "самозанят", "профессиональн")},
+}
+
+
+def profile_score(h: Hit, u: "User") -> int:
+    """Сколько признаков профиля пользователя встречается в заголовке/описании материала."""
+    text = f"{h.title} {h.summary}".lower()
+    score = 0
+    for key, vals in PROFILE_WORDS.items():
+        words = vals.get(getattr(u, key) or "", ())
+        if any(w in text for w in words):
+            score += 1
+    if u.stage == "idea" and h.kind == "course" and not h.paid:
+        score += 1           # новичку сначала бесплатные курсы
+    return score
+
+
+def personalize(hits: list[Hit], u: "User") -> list[Hit]:
+    """Среди одинаково релевантных материалов поднимает подходящие профилю."""
+    return sorted(hits, key=lambda h: -(h.coverage + 0.04 * min(profile_score(h, u), 3)))
+
+
 LABELS = {"stage": "Этап", "sphere": "Сфера", "tax": "Режим"}
 VALUES = {v: l for q in PROFILE_Q.values() for l, v in q[1]}
 
@@ -90,8 +119,8 @@ class Dialog:
             return Reply("Слишком широкий вопрос. Что именно вас интересует? Опишите подробнее "
                          "или выберите ближайшее:", opts)
 
-        strong = [h for h in free if h.coverage >= 0.5]
-        rec = [h for h in paid if h.coverage >= 0.5]
+        strong = personalize([h for h in free if h.coverage >= 0.5], u)
+        rec = personalize([h for h in paid if h.coverage >= 0.5], u)
         u.answers += 1                      # считаем каждый содержательный вопрос, в т.ч. без результата
         if not (strong or rec):
             btn = self._profile_buttons(u)

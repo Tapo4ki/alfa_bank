@@ -149,3 +149,21 @@ def test_me_edit_reset():
     assert run(d.me_action(1, "edit")).buttons[0][1].startswith("p:stage")
     run(d.me_action(1, "reset"))
     assert "не указан" in run(d.me(1)).text
+
+
+def test_profile_reranks_equal_hits():
+    plain = Hit("1", "article", "Налоги ИП", "a", "общие сведения", False, None, 1, 1, 1.0, "x")
+    usn = Hit("2", "article", "Налоги на УСН", "b", "упрощённая система", False, None, 1, 1, 1.0, "x")
+    d = Dialog(FakeKB([plain, usn]), MemStore(), "https://x")
+    u = run(d.store.get(1))
+    u.tax = "usn"
+    run(d.store.save(u))
+    r = run(d.ask(1, "налоги усн"))
+    assert r.text.index("Налоги на УСН") < r.text.index("Налоги ИП")
+
+
+def test_course_offers_learning_reminder():
+    c = Hit("abc", "course", "Курс про налоги", "c", "", False, None, 1, 1, 1.0, "x")
+    d = Dialog(FakeKB([c]), MemStore(), "https://x")
+    r = run(d.ask(1, "налоги усн"))
+    assert ("Напомнить продолжить обучение", "cr:abc") in r.buttons

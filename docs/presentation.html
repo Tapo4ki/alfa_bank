@@ -3,196 +3,179 @@
 <style>
 @page{size:1280px 720px;margin:0}
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--red:#EF3124;--ink:#141414;--lime:#A8F000;--violet:#9A35FF;--blue:#0055FF;--bg:#EDEDED}
+:root{--red:#EF3124;--ink:#141414;--lime:#A8F000;--violet:#9A35FF;--blue:#0055FF;--bg:#EBEBEB}
 html,body{background:#fff;font-family:"Segoe UI","Arial",sans-serif;color:var(--ink)}
-.s{width:1280px;height:720px;padding:56px 64px;position:relative;overflow:hidden;page-break-after:always;break-after:page;background:var(--bg)}
+.s{width:1280px;height:720px;padding:60px 72px;position:relative;overflow:hidden;page-break-after:always;break-after:page;background:var(--bg)}
 .s:last-child{page-break-after:auto}
-h1{font-size:64px;line-height:1.05;font-weight:900;letter-spacing:-1px}
-h2{font-size:44px;font-weight:900;letter-spacing:-.5px;margin-bottom:28px}
-.tag{display:inline-block;background:var(--lime);color:#000;font-weight:800;font-size:15px;padding:6px 14px;border-radius:99px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px}
-.num{position:absolute;right:64px;bottom:34px;font-weight:800;font-size:16px;opacity:.5}
-.brand{position:absolute;right:64px;top:44px;font-weight:900;font-size:15px;background:var(--red);color:#fff;padding:7px 14px;border-radius:6px;transform:rotate(-3deg)}
-.red,.card.red{background:var(--red);color:#fff}.blue,.card.blue{background:var(--blue);color:#fff}.violet,.card.violet{background:var(--violet);color:#fff}
-.grid{display:grid;gap:20px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:repeat(4,1fr)}
-.card{background:#fff;border-radius:22px;padding:26px 28px;font-size:20px;line-height:1.35}
-.card b.t{display:block;font-size:24px;font-weight:900;margin-bottom:8px}
-.card .k{display:inline-block;color:var(--red);font-weight:900;font-size:15px;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
-.big{font-size:70px;font-weight:900;color:var(--red);line-height:1}
-.mut{opacity:.7}
-.chat{background:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:10px;font-size:17px;line-height:1.3}
-.u{align-self:flex-end;background:#2b6ef2;color:#fff;border-radius:16px 16px 4px 16px;padding:9px 14px;max-width:80%}
-.b{align-self:flex-start;background:#EEF0F3;border-radius:16px 16px 16px 4px;padding:10px 14px;max-width:92%}
-.btn{display:inline-block;background:#fff;border:2px solid #d5d9e0;border-radius:10px;padding:4px 10px;margin:4px 4px 0 0;font-weight:700;font-size:15px}
+.s.red{background:var(--red);color:#fff}.s.blue{background:var(--blue);color:#fff}
+h1{font-size:68px;line-height:1.05;font-weight:900;letter-spacing:-1.2px}
+h2{font-size:52px;font-weight:900;letter-spacing:-.8px;margin-bottom:40px}
+.tag{display:inline-block;background:var(--lime);color:#000;font-weight:800;font-size:15px;padding:7px 16px;border-radius:99px;letter-spacing:.6px;text-transform:uppercase;margin-bottom:22px}
+.brand{position:absolute;right:72px;top:48px;font-weight:900;font-size:15px;background:var(--red);color:#fff;padding:7px 14px;border-radius:6px;transform:rotate(-3deg)}
+.s.red .brand{background:#fff;color:var(--red)}
+.num{position:absolute;right:72px;bottom:32px;font-weight:800;font-size:15px;opacity:.4}
+.grid{display:grid;gap:24px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:#fff;border-radius:26px;padding:32px 34px;font-size:23px;line-height:1.3;color:var(--ink)}
+.card .t{display:block;font-size:28px;font-weight:900;line-height:1.12;margin-bottom:10px}
+.n{font-weight:900;font-size:76px;line-height:.9;font-style:italic;transform:skewX(-9deg);display:inline-block;margin-bottom:18px}
+.mut{opacity:.6}
+.tile{border-radius:22px;background:var(--red);color:#fff;padding:26px 28px;height:170px;display:flex;flex-direction:column;justify-content:space-between;font-weight:800;font-size:24px;line-height:1.15}
+.tile b{font-size:56px;font-weight:900}.tile.l{background:var(--lime);color:#000}
+.chat{background:#fff;border-radius:26px;padding:28px;display:flex;flex-direction:column;gap:14px;font-size:21px;line-height:1.3}
+.u{align-self:flex-end;background:#2b6ef2;color:#fff;border-radius:18px 18px 4px 18px;padding:10px 18px}
+.b{align-self:flex-start;background:#EEF0F3;border-radius:18px 18px 18px 4px;padding:12px 18px;max-width:96%}
+.btn{display:inline-block;background:#fff;border:2px solid #d5d9e0;border-radius:12px;padding:4px 12px;margin:8px 6px 0 0;font-weight:700;font-size:18px}
 .lnk{color:#1a5fd6;font-weight:700}
-table{border-collapse:collapse;width:100%;font-size:19px}
-td,th{padding:11px 14px;text-align:left;border-bottom:2px solid #eee}th{font-size:15px;text-transform:uppercase;letter-spacing:.5px;color:#777}
-.pill{display:inline-block;border-radius:99px;padding:4px 14px;font-weight:800;font-size:16px;margin:3px 4px 3px 0}
-code{background:#111;color:var(--lime);padding:3px 9px;border-radius:8px;font-family:Consolas,monospace;font-size:.9em}
+.big{font-size:72px;font-weight:900;line-height:1}
+code{background:#111;color:var(--lime);padding:2px 9px;border-radius:8px;font-family:Consolas,monospace;font-size:.85em}
+.pic{position:absolute;pointer-events:none}
 </style></head><body>
 
 <!-- 1 -->
-<section class="s red" style="padding-top:64px">
- <div class="brand" style="background:#fff;color:var(--red)">Hack&amp;Change 2026 · трек 2</div>
- <span class="tag">Первый тур · команда G1T C0MM1T</span>
- <h1 style="margin-top:6px">ИИ-помощник<br>для предпринимателей<br>в Telegram</h1>
- <p style="font-size:26px;margin-top:22px;max-width:780px;line-height:1.35">Отвечает по базе «Альфа-Курса», честно говорит «в базе нет», собирает профиль кнопками и возвращает на платформу напоминаниями.</p>
- <div class="card" style="position:absolute;left:64px;bottom:48px;width:1152px;color:var(--ink);display:grid;grid-template-columns:1.05fr 1fr;gap:28px;font-size:19px">
-  <div><span class="k">Репозиторий</span><br><b style="font-size:23px">github.com/Tapo4ki/alfa_bank</b><br><span class="mut">Для приватного репозитория: доступ <b>hack-and-change-2026</b></span></div>
-  <div><span class="k">Порядок проверки</span><br>
-   <code>cp env.example .env</code> токен бота и <code>BASE_URL</code><br>
-   бэкап → <code>data/alfa_course_hackathon.backup</code><br>
-   <code>docker compose up -d --build</code> · бот <b>@alphabankhackaton_bot</b></div>
+<section class="s blue">
+ <div class="brand">Hack&amp;Change 2026 · трек 2</div>
+ <span class="tag">G1T C0MM1T</span>
+ <h1 style="max-width:700px">ИИ-помощник для предпринимателей в Telegram</h1>
+ <p style="font-size:26px;margin-top:24px;max-width:600px;line-height:1.35;font-weight:600">Отвечает по базе «Альфа-Курса» и возвращает на платформу</p>
+ <img class="pic" src="assets/cap.png" style="right:-20px;bottom:-30px;width:640px">
+ <div style="position:absolute;left:72px;bottom:56px;width:620px;display:grid;gap:14px">
+  <div class="card" style="font-size:20px;padding:20px 28px"><b style="font-size:24px">github.com/Tapo4ki/alfa_bank</b><br><span class="mut">доступ: hack-and-change-2026</span></div>
+  <div class="card" style="font-size:18px;padding:18px 28px;background:var(--lime)"><b>Проверка:</b> <code>cp env.example .env</code> → бэкап в <code>data/</code> → <code>docker compose up -d --build</code></div>
  </div>
 </section>
 
 <!-- 2 -->
-<section class="s"><div class="brand">Альфа-Курс</div>
- <span class="tag">Проблема и пользователь</span><h2>Рекомендация «по теме» не помогает сделать шаг</h2>
- <div class="grid g3">
-  <div class="card"><span class="k">01</span><b class="t">Начинающий</b>Не знает, с чего начать. Нужен понятный вход и последовательность.</div>
-  <div class="card"><span class="k">02</span><b class="t">Владелец малого бизнеса</b>Нужен короткий ответ или шаблон прямо сейчас: налоги, касса, учёт.</div>
-  <div class="card"><span class="k">03</span><b class="t">Соло-фаундер</b>Хочет разобраться системно, иногда нужен углублённый курс.</div>
- </div>
- <div class="card red" style="margin-top:20px;font-size:23px;line-height:1.35"><b>Инсайт:</b> пользователь не знает терминов и не хочет анкету. Решение должно быть полезным сразу, а платный курс предлагать только когда он помогает с задачей.</div>
- <div class="grid g3" style="margin-top:20px;font-size:20px">
-  <div class="card" style="text-align:center"><div class="big">1 486</div>материалов в индексе</div>
-  <div class="card" style="text-align:center"><div class="big">37</div>курсов (платные — отдельно)</div>
-  <div class="card" style="text-align:center"><div class="big">7 342</div>пользователя в данных</div>
+<section class="s"><div class="brand">Hack&amp;Change 2026</div>
+ <h2>Содержание</h2>
+ <div class="grid g4" style="gap:20px">
+  <div class="tile l">Проблема<b>03</b></div>
+  <div class="tile">Возможности<b>04</b></div>
+  <div class="tile">Диалог<b>05</b></div>
+  <div class="tile">Архитектура<b>06</b></div>
+  <div class="tile">Требования<b>07</b></div>
+  <div class="tile">Возврат<b>08</b></div>
+  <div class="tile">Эффект<b>09</b></div>
+  <div class="tile">Развитие<b>10</b></div>
  </div><div class="num">2</div>
 </section>
 
 <!-- 3 -->
-<section class="s"><div class="brand">Альфа-Курс</div>
- <span class="tag">Решение</span><h2>Что умеет бот</h2>
+<section class="s"><div class="brand">Hack&amp;Change 2026</div>
+ <h2>Проблема и пользователь</h2>
  <div class="grid g3">
-  <div class="card"><span class="k">Вопрос → ответ</span><b class="t">Поиск по базе знаний</b>Статьи, уроки, документы, глоссарий, вебинары. Ответ с фрагментом и ссылкой на материал.</div>
-  <div class="card"><span class="k">Неясно</span><b class="t">Уточняет и не выдумывает</b>На широкий запрос («налоги») — один вопрос с кнопками. Нет в базе — честно говорит об этом.</div>
-  <div class="card"><span class="k">Платное</span><b class="t">Польза и ссылка</b>Цена и страница курса, без пересказа содержания. Не чаще раза в 5 ответов — без навязчивости.</div>
-  <div class="card"><span class="k">Профиль</span><b class="t">Кнопками, без анкеты</b>Этап, сфера, налоговый режим. Можно «Пропустить» — бот полезен и без профиля.</div>
-  <div class="card"><span class="k">Возврат</span><b class="t">Напоминания</b>Разовые и повторяющиеся. Налоговые даты по режиму: УСН, НПД. Частота меняется, отключается в один тап.</div>
-  <div class="card"><span class="k">Расширение</span><b class="t">Готов к LLM</b>Поиск за интерфейсом <code>SearchBackend</code>: подключим семантику и генерацию, не трогая диалог.</div>
- </div><div class="num">3</div>
+  <div class="card"><span class="n" style="color:var(--red)">1</span><span class="t">Начинающий</span><span class="mut">С чего начать?</span></div>
+  <div class="card"><span class="n" style="color:var(--violet)">2</span><span class="t">Владелец малого бизнеса</span><span class="mut">Нужен ответ сейчас</span></div>
+  <div class="card"><span class="n" style="color:var(--blue)">3</span><span class="t">Соло-фаундер</span><span class="mut">Нужен курс глубже</span></div>
+ </div>
+ <p style="font-size:30px;font-weight:800;margin-top:44px;max-width:900px;line-height:1.25">Рекомендация «по теме» не учитывает, что человек готов сделать. А анкету он заполнять не хочет.</p>
+ <div class="num">3</div>
 </section>
 
 <!-- 4 -->
-<section class="s"><div class="brand">Альфа-Курс</div>
- <span class="tag">Сценарий консультации</span><h2 style="margin-bottom:20px">Реальный диалог из Telegram</h2>
- <div class="grid g2" style="gap:24px">
-  <div class="chat">
-   <div class="u">налоги</div>
-   <div class="b">Слишком широкий вопрос. Что именно вас интересует?<br><span class="btn">НДС в 2026 году</span><span class="btn">Имущественные налоги</span><span class="btn">Налоги и взносы ИП</span></div>
-   <div class="u">Налоги и взносы ИП</div>
-   <div class="b"><b>Нашёл в базе:</b><br>• Статья: <span class="lnk">Налоги и взносы ИП: полный гайд</span><br>&nbsp;&nbsp;…режимы, по которым регулярно меняется законодательство. <b>Налоги</b> платит ИП…<br><br><b>Если нужно глубже — платный курс (3990 ₽):</b><br>• <span class="lnk">УСН на маркетплейсах</span></div>
-  </div>
-  <div class="chat">
-   <div class="u">квантовая физика банан</div>
-   <div class="b">В базе «Альфа-Курс» по этому вопросу ничего не нашёл. Попробуйте переформулировать или уточнить тему, например: налоги, патент, самозанятость, касса.</div>
-   <div class="u">/tax</div>
-   <div class="b">Выберите режим:<br><span class="btn">УСН ИП</span><span class="btn">УСН ООО</span><span class="btn">НПД</span></div>
-   <div class="b">Подписал на налоговые даты. Напомню <b>за 3 дня</b>.<br><span class="btn">За 1 дн.</span><span class="btn">За 7 дн.</span><span class="btn">Отключить</span></div>
-  </div>
+<section class="s"><div class="brand">Hack&amp;Change 2026</div>
+ <h2>Что умеет бот</h2>
+ <div class="grid g3" style="gap:24px">
+  <div class="card"><span class="n" style="color:var(--blue)">1</span><span class="t">Ответы по базе</span></div>
+  <div class="card"><span class="n" style="color:var(--blue)">2</span><span class="t">Уточняет, не выдумывает</span></div>
+  <div class="card"><span class="n" style="color:var(--blue)">3</span><span class="t">Профиль кнопками</span></div>
+  <div class="card"><span class="n" style="color:var(--blue)">4</span><span class="t">Платный курс по делу</span></div>
+  <div class="card"><span class="n" style="color:var(--blue)">5</span><span class="t">Напоминания</span></div>
+  <div class="card"><span class="n" style="color:var(--blue)">6</span><span class="t">Готов к LLM</span></div>
  </div><div class="num">4</div>
 </section>
 
 <!-- 5 -->
-<section class="s"><div class="brand">Альфа-Курс</div>
- <span class="tag">Архитектура</span><h2 style="margin-bottom:14px">Один <code style="font-size:.7em">docker compose up</code> — и всё работает</h2>
- <svg viewBox="0 0 1152 420" width="1152" height="420" font-family="Segoe UI,Arial" font-weight="700">
-  <rect x="0" y="150" width="200" height="110" rx="20" fill="#fff"/><text x="100" y="198" text-anchor="middle" font-size="22">Пользователь</text><text x="100" y="228" text-anchor="middle" font-size="16" fill="#777">Telegram</text>
-  <rect x="270" y="30" width="330" height="360" rx="24" fill="#EF3124"/><text x="435" y="68" text-anchor="middle" font-size="22" fill="#fff">Бот · aiogram 3</text>
-  <rect x="294" y="90" width="282" height="68" rx="14" fill="#fff"/><text x="435" y="118" text-anchor="middle" font-size="18">dialog.py</text><text x="435" y="142" text-anchor="middle" font-size="14" fill="#777" font-weight="600">уточнение · отказ · платное</text>
-  <rect x="294" y="172" width="282" height="68" rx="14" fill="#fff"/><text x="435" y="200" text-anchor="middle" font-size="18">kb.py · SearchBackend</text><text x="435" y="224" text-anchor="middle" font-size="14" fill="#777" font-weight="600">full-text, русская морфология</text>
-  <rect x="294" y="254" width="282" height="68" rx="14" fill="#fff"/><text x="435" y="282" text-anchor="middle" font-size="18">reminders.py</text><text x="435" y="306" text-anchor="middle" font-size="14" fill="#777" font-weight="600">планировщик · налоговый календарь</text>
-  <rect x="294" y="336" width="282" height="40" rx="12" fill="#A8F000"/><text x="435" y="363" text-anchor="middle" font-size="16">профиль · напоминания в БД</text>
-  <rect x="700" y="60" width="452" height="300" rx="24" fill="#0055FF"/><text x="926" y="98" text-anchor="middle" font-size="22" fill="#fff">PostgreSQL 17</text>
-  <rect x="724" y="120" width="404" height="52" rx="12" fill="#fff"/><text x="926" y="153" text-anchor="middle" font-size="17">Данные «Альфа-Курс» (бэкап)</text>
-  <rect x="724" y="186" width="404" height="52" rx="12" fill="#fff"/><text x="926" y="219" text-anchor="middle" font-size="17">bot.kb_items — индекс 1486 материалов</text>
-  <rect x="724" y="252" width="404" height="52" rx="12" fill="#fff"/><text x="926" y="285" text-anchor="middle" font-size="17">пользователи · профили · напоминания</text>
-  <rect x="724" y="316" width="404" height="30" rx="10" fill="#A8F000"/><text x="926" y="337" text-anchor="middle" font-size="14">восстанавливается при первом старте</text>
-  <path d="M200 205H270M600 205H700" stroke="#141414" stroke-width="4" fill="none"/>
-  <path d="M262 198l10 7-10 7zM692 198l10 7-10 7z" fill="#141414"/>
-  <text x="635" y="190" text-anchor="middle" font-size="14" fill="#555">SQL</text><text x="235" y="190" text-anchor="middle" font-size="14" fill="#555">polling</text>
- </svg>
- <p style="font-size:19px;margin-top:8px"><b>Python · aiogram 3 · PostgreSQL full-text · Docker.</b> Наружу не публикуется ни один порт, секреты только в <code>.env</code>, тесты — в контейнере.</p>
- <div class="num">5</div>
+<section class="s"><div class="brand">Hack&amp;Change 2026</div>
+ <h2 style="margin-bottom:30px">Диалог</h2>
+ <div class="grid g2" style="gap:28px">
+  <div class="chat">
+   <div class="u">налоги</div>
+   <div class="b">Что именно интересует?<br><span class="btn">НДС</span><span class="btn">Налоги ИП</span><span class="btn">Имущество</span></div>
+   <div class="u">Налоги ИП</div>
+   <div class="b">• <span class="lnk">Налоги и взносы ИП: гайд</span><br>• Курс <span class="lnk">УСН на маркетплейсах</span>, 3990 ₽</div>
+  </div>
+  <div class="chat">
+   <div class="u">квантовая физика банан</div>
+   <div class="b">В базе по этому вопросу ничего не нашёл. Уточните тему: налоги, патент, касса.</div>
+   <div class="u">/tax</div>
+   <div class="b">Подписал на даты УСН. Напомню за 3 дня.<br><span class="btn">За 7 дн.</span><span class="btn">Отключить</span></div>
+  </div>
+ </div><div class="num">5</div>
 </section>
 
 <!-- 6 -->
-<section class="s"><div class="brand">Альфа-Курс</div>
- <span class="tag">Качество и ограничения кейса</span><h2>Спроектировано под правила, а не наоборот</h2>
- <div class="card"><table>
-  <tr><th style="width:36%">Требование кейса</th><th>Как решено</th></tr>
-  <tr><td>Честно сообщать, если ответа нет</td><td>Порог покрытия запроса; слабые совпадения не показываются</td></tr>
-  <tr><td>Уточнять неясные вопросы</td><td>Один вопрос с кнопками-вариантами на широкий запрос</td></tr>
-  <tr><td>Не раскрывать платное содержание</td><td>Тексты уроков только для релевантности; пользователю — польза, цена, ссылка</td></tr>
-  <tr><td>Без навязчивости</td><td>Платный курс не чаще раза в 5 ответов; <code>/pause</code>, <code>/stop</code>, смена частоты</td></tr>
-  <tr><td>Данные кейса не публиковать</td><td>Бэкап в <code>.gitignore</code>, в репозитории только код; внешних API нет</td></tr>
-  <tr><td>Воспроизводимый запуск</td><td>Dockerfile, compose, зафиксированные зависимости, <code>env.example</code></td></tr>
- </table></div><div class="num">6</div>
+<section class="s"><div class="brand">Hack&amp;Change 2026</div>
+ <h2 style="margin-bottom:24px">Архитектура</h2>
+ <svg viewBox="0 0 1136 400" width="1136" height="400" font-family="Segoe UI,Arial" font-weight="800">
+  <rect x="0" y="130" width="220" height="130" rx="26" fill="#fff"/><text x="110" y="205" text-anchor="middle" font-size="28">Telegram</text>
+  <rect x="300" y="10" width="340" height="380" rx="30" fill="#EF3124"/><text x="470" y="62" text-anchor="middle" font-size="28" fill="#fff">Бот · aiogram</text>
+  <rect x="330" y="95" width="280" height="64" rx="16" fill="#fff"/><text x="470" y="136" text-anchor="middle" font-size="22">Диалог</text>
+  <rect x="330" y="180" width="280" height="64" rx="16" fill="#fff"/><text x="470" y="221" text-anchor="middle" font-size="22">Поиск</text>
+  <rect x="330" y="265" width="280" height="64" rx="16" fill="#fff"/><text x="470" y="306" text-anchor="middle" font-size="22">Напоминания</text>
+  <rect x="720" y="60" width="416" height="280" rx="30" fill="#0055FF"/><text x="928" y="125" text-anchor="middle" font-size="28" fill="#fff">PostgreSQL</text>
+  <rect x="750" y="160" width="356" height="64" rx="16" fill="#fff"/><text x="928" y="201" text-anchor="middle" font-size="22">Материалы · 1 486</text>
+  <rect x="750" y="245" width="356" height="64" rx="16" fill="#A8F000"/><text x="928" y="286" text-anchor="middle" font-size="22">Профили · напоминания</text>
+  <path d="M220 195H300M640 195H720" stroke="#141414" stroke-width="5"/>
+  <path d="M292 186l12 9-12 9zM712 186l12 9-12 9z" fill="#141414"/>
+ </svg>
+ <p style="font-size:22px;font-weight:700;margin-top:8px"><code>docker compose up</code> — и всё работает</p>
+ <div class="num">6</div>
 </section>
 
 <!-- 7 -->
-<section class="s"><div class="brand">Альфа-Курс</div>
- <span class="tag">Возврат на платформу</span><h2>Как бот возвращает пользователей</h2>
- <div class="grid g3">
-  <div class="card"><b class="t">1 · Полезный ответ</b>Ссылка на материал в платформе вместо пересказа: пользователь переходит за деталями.</div>
-  <div class="card"><b class="t">2 · Напоминание</b>Налоговая дата или «продолжить обучение» возвращает в нужный момент, а не по рассылке.</div>
-  <div class="card"><b class="t">3 · Платный шаг</b>Если задача глубже статьи, бот объясняет пользу курса и даёт ссылку на покупку.</div>
- </div>
- <div class="card" style="margin-top:20px;font-size:21px"><span class="k">Контроль частоты</span><br>Пользователь сам выбирает «за 1 / 3 / 7 дней» и может выключить напоминания. Бот не шлёт ничего без подписки, поэтому он не раздражает.</div>
- <div class="grid g3" style="margin-top:20px">
-  <div class="card violet" style="font-size:19px"><b>Гипотеза.</b> Рекомендации «по делу» + напоминания увеличивают долю дошедших до курса.</div>
-  <div class="card blue" style="font-size:19px"><b>Вторая цель.</b> Больше дней, когда пользователь заходит на платформу.</div>
-  <div class="card" style="font-size:19px;background:var(--lime)"><b>Как проверим</b> — следующий слайд.</div>
+<section class="s"><div class="brand">Hack&amp;Change 2026</div>
+ <h2>Требования кейса</h2>
+ <div class="grid g3" style="gap:24px">
+  <div class="card"><span class="t">Честное «в базе нет»</span><span class="mut">Слабые совпадения скрыты</span></div>
+  <div class="card"><span class="t">Уточнение вопроса</span><span class="mut">Кнопки с вариантами</span></div>
+  <div class="card"><span class="t">Платное без раскрытия</span><span class="mut">Польза и ссылка</span></div>
+  <div class="card"><span class="t">Без навязчивости</span><span class="mut">Пауза, частота, стоп</span></div>
+  <div class="card"><span class="t">Данные не публикуем</span><span class="mut">Бэкап в .gitignore</span></div>
+  <div class="card"><span class="t">Запуск одной командой</span><span class="mut">Docker + README</span></div>
  </div><div class="num">7</div>
 </section>
 
 <!-- 8 -->
-<section class="s"><div class="brand">Альфа-Курс</div>
- <span class="tag">План проверки эффекта</span><h2 style="margin-bottom:20px">A/B-тест после внедрения</h2>
- <div class="grid g2">
-  <div class="card"><span class="k">Дизайн</span><b class="t">50 / 50 по хешу tg_id</b><b>Тест:</b> рекомендации курсов + напоминания.<br><b>Контроль:</b> только ответы по базе.<br>Группа фиксируется на входе, срок не менее 4 недель (налоговый цикл), выборка по MDE: α = 0,05, мощность 0,8.</div>
-  <div class="card"><span class="k">Атрибуция</span><b class="t">UTM в каждой ссылке бота</b><code>utm_source=tgbot&amp;utm_campaign=&lt;группа&gt;</code><br>Клик → визит → покупка на платформе.</div>
+<section class="s"><div class="brand">Hack&amp;Change 2026</div>
+ <h2>Как бот возвращает на платформу</h2>
+ <div class="grid g3">
+  <div class="card" style="padding:40px 34px"><span class="n" style="color:var(--violet)">1</span><span class="t">Ответ со ссылкой</span><span class="mut">Детали на платформе</span></div>
+  <div class="card" style="padding:40px 34px"><span class="n" style="color:var(--violet)">2</span><span class="t">Напоминание</span><span class="mut">В нужный момент</span></div>
+  <div class="card" style="padding:40px 34px"><span class="n" style="color:var(--violet)">3</span><span class="t">Платный курс</span><span class="mut">Когда нужно глубже</span></div>
  </div>
- <div class="grid g3" style="margin-top:20px">
-  <div class="card red"><b class="t">Основная</b>Конверсия в покупку курса за 30 дней.</div>
-  <div class="card violet"><b class="t">Возврат</b>Доля вернувшихся в 7/30 дней, повторные сессии, CTR ссылок.</div>
-  <div class="card blue"><b class="t">Защитные</b>Доля «в базе нет», <code style="background:#fff;color:#000">/pause</code>, отписки: рост продаж не ценой удовлетворённости.</div>
- </div>
- <p style="font-size:17px;margin-top:12px;padding-right:50px"><b>Решение:</b> раскатываем, если эффект значим (z-тест двух долей, ДИ разницы), а защитные метрики не ухудшились. Срезы по этапу, сфере, режиму.</p>
  <div class="num">8</div>
 </section>
 
 <!-- 9 -->
-<section class="s"><div class="brand">Альфа-Курс</div>
- <span class="tag">Ограничения и развитие</span><h2>Честно о слабых местах и следующих шагах</h2>
- <div class="grid g2">
-  <div class="card"><span class="k">Сейчас</span>
-   <ul style="padding-left:22px;line-height:1.55">
-    <li>Поиск лексический, без синонимов и сложных формулировок.</li>
-    <li>Налоговые даты ориентировочные; патент и ОСН не поддержаны.</li>
-    <li>Одна таймзона на всех; ссылки строятся от <code>BASE_URL</code>.</li>
-    <li>Платных курсов мало, поэтому основной упор на возврат и клики.</li>
-   </ul></div>
-  <div class="card"><span class="k">Дальше</span>
-   <ul style="padding-left:22px;line-height:1.55">
-    <li><b>Семантический поиск</b> и LLM за <code>SearchBackend</code> с цитатами из базы.</li>
-    <li><b>Рекомендации по поведению:</b> популярность курсов и история уроков из данных.</li>
-    <li><b>Связка аккаунта</b> бота с аккаунтом платформы для точной атрибуции.</li>
-    <li><b>Календарь по региону</b> и переносам на выходные, патент, ОСН.</li>
-   </ul></div>
+<section class="s"><div class="brand">Hack&amp;Change 2026</div>
+ <h2>Проверка эффекта: A/B</h2>
+ <div class="grid g3">
+  <div class="card" style="text-align:center;padding:40px 24px"><div class="big" style="color:var(--red)">50/50</div><span class="t" style="margin-top:14px">Тест и контроль</span></div>
+  <div class="card" style="text-align:center;padding:40px 24px"><div class="big" style="color:var(--violet)">4 нед</div><span class="t" style="margin-top:14px">Налоговый цикл</span></div>
+  <div class="card" style="text-align:center;padding:40px 24px"><div class="big" style="color:var(--blue)">UTM</div><span class="t" style="margin-top:14px">В каждой ссылке</span></div>
+ </div>
+ <div class="grid g3" style="margin-top:24px">
+  <div class="card" style="background:var(--red);color:#fff"><span class="t" style="margin:0">Покупки</span></div>
+  <div class="card" style="background:var(--violet);color:#fff"><span class="t" style="margin:0">Возврат</span></div>
+  <div class="card" style="background:var(--blue);color:#fff"><span class="t" style="margin:0">Отписки</span></div>
  </div><div class="num">9</div>
 </section>
 
 <!-- 10 -->
-<section class="s red"><div class="brand" style="background:#fff;color:var(--red)">G1T C0MM1T</div>
- <span class="tag">Итог</span><h1 style="font-size:58px">Полезный ответ сразу,<br>платный шаг — по делу,<br>возврат — без спама</h1>
- <div class="grid g3" style="margin-top:36px">
-  <div class="card" style="color:var(--ink)"><b class="t">Работает</b>Бот запущен, 1486 материалов, тесты в контейнере.</div>
-  <div class="card" style="color:var(--ink)"><b class="t">Воспроизводим</b>Одна команда через Docker, README с проверкой.</div>
-  <div class="card" style="color:var(--ink)"><b class="t">Измеримо</b>План A/B с метриками и защитными условиями.</div>
- </div>
- <p style="margin-top:34px;font-size:23px;font-weight:700">github.com/Tapo4ki/alfa_bank · @alphabankhackaton_bot</p>
- <div class="num" style="color:#fff">10</div>
+<section class="s"><div class="brand">Hack&amp;Change 2026</div>
+ <h2>Ограничения и развитие</h2>
+ <div class="grid g2" style="gap:28px">
+  <div class="card" style="padding:40px 40px"><span class="t" style="color:var(--red);margin-bottom:18px">Сейчас</span>
+   Поиск без синонимов<br>Даты налогов ориентировочные<br>Одна таймзона</div>
+  <div class="card" style="padding:40px 40px"><span class="t" style="color:var(--blue);margin-bottom:18px">Дальше</span>
+   Семантика и LLM<br>Рекомендации по поведению<br>Календарь по регионам</div>
+ </div><div class="num">10</div>
+</section>
+
+<!-- 11 -->
+<section class="s red"><div class="brand">G1T C0MM1T</div>
+ <h1 style="font-size:62px;max-width:640px;margin-top:40px">Полезно сразу.<br>Платное — по делу.<br>Без спама.</h1>
+ <img class="pic" src="assets/laptop.png" style="right:-10px;bottom:-10px;width:640px">
+ <p style="position:absolute;left:72px;bottom:44px;font-size:24px;font-weight:800">github.com/Tapo4ki/alfa_bank<br>@alphabankhackaton_bot</p>
 </section>
 </body></html>

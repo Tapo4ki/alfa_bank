@@ -4,7 +4,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
-from datetime import date
+from datetime import date, timedelta
 
 import asyncpg
 from aiogram import Bot, Dispatcher, F
@@ -163,6 +163,17 @@ async def amain() -> None:
     @dp.callback_query(F.data.startswith("me:"))
     async def me_cb(cq: CallbackQuery):
         await send(cq.message, await dlg.me_action(cq.from_user.id, cq.data[3:]))
+        await cq.answer()
+
+    @dp.callback_query(F.data.startswith("cr:"))
+    async def course_remind(cq: CallbackQuery):
+        async with pool.acquire() as c:
+            title = await c.fetchval("SELECT title FROM bot.kb_items WHERE id=$1::uuid", cq.data[3:])
+        due = date.today() + timedelta(days=3)
+        p = rem.Parsed(f"Продолжить обучение: «{title}»", f"once:{due:%Y-%m-%d}", 10)
+        nxt = await rem.add(pool, cq.from_user.id, p, cfg.tz)
+        await cq.message.answer(f"Напомню {nxt:%d.%m.%Y в %H:%M}. Изменить срок — /remind, список — /list."
+                                if nxt else "Не удалось поставить напоминание.")
         await cq.answer()
 
     @dp.callback_query(F.data.startswith("i:"))
